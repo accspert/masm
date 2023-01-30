@@ -30,17 +30,17 @@ def signup_view(request):
     return render(request, 'main/signup.html', {'form': form})
 @login_required(login_url='login')
 def index(request):
-    return render(request, 'main/index.html' )
+    return render(request, 'main/index.html',{'user': request.user} )
 @login_required(login_url='login')
 def Courses(request):
-    return render(request, 'main/course.html' )
+    return render(request, 'main/course.html',{'user': request.user} )
 @login_required(login_url='login')
 def Student(request):
-    return render(request, 'main/student.html' )
+    return render(request, 'main/student.html',{'user': request.user} )
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
 def admin_view(request):
-    return render(request, 'main/admin.html' )
+    return render(request, 'main/admin.html',{'user': request.user} )
 
 def logout_view(request):
     logout(request)

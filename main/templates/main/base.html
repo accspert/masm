@@ -112,12 +112,14 @@
                   <p>Courses</p>
                 </a>
               </li>
+              {% if  user.is_superuser %}
               <li class="nav-item">
                 <a href="{% url 'myadmin' %}" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>Admin</p>
                 </a>
               </li>
+              {% endif %}
             </ul>
           </nav>
           <!-- /.sidebar-menu -->
