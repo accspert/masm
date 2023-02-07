@@ -3,10 +3,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Students</h1>
+            <h1>Teachers</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{% url 'CreateStudent' %}" class="btn btn-primary">Add New Student</a>
+            <a href="{% url 'CreateTeacher' %}" class="btn btn-primary">Add New Teacher</a>
           </div>
          
         </div>
@@ -19,7 +19,7 @@
           <div class="col-md-6">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">List of  Students</h3>
+                <h3 class="card-title">List of  Teachers</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -36,11 +36,11 @@
                   <tbody>
                     {% for d in data %}
                   <tr>
-                    <td><a href="{% url 'UpdateStudent' d.id %}" style="color:black"> {{d.name}} </a></td>
-                    <td><a href="{% url 'UpdateStudent' d.id %} "  style="color:black">{{d.surname}} </a>
+                    <td><a href="{% url 'UpdateTeacher' d.id %}" style="color:black"> {{d.name}} </a></td>
+                    <td><a href="{% url 'UpdateTeacher' d.id %} "  style="color:black">{{d.surname}} </a>
                     </td>
-                    <td><a href="{% url 'UpdateStudent' d.id %}"  style="color:black"> {{d.birthdate}}</a></td>
-                    <td> <a href="{% url 'UpdateStudent' d.id %}"  style="color:black"> {{d.street_nr}}</a></td>
+                    <td><a href="{% url 'UpdateTeacher' d.id %}"  style="color:black"> {{d.birthdate}}</a></td>
+                    <td> <a href="{% url 'UpdateTeacher' d.id %}"  style="color:black"> {{d.street_nr}}</a></td>
                 
                   </tr>
                   {% endfor %}
@@ -71,7 +71,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add New Student</h3>
+                <h3 class="card-title">Add New Teacher</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -156,7 +156,7 @@
                 </div>
                 
                   <div class="col-6">
-                  <a href="{% url 'DeleteStudent' student.id %}" class="btn btn-danger">Delete</a>
+                  <a href="{% url 'DeleteTeacher' student.id %}" class="btn btn-danger">Delete</a>
                 </div>
             </div>
               </form>

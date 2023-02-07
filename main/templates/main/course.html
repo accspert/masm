@@ -1,3 +1,172 @@
 {% extends 'main/base.html' %} {% block content %}
-<h1>Courses</h1>
+  <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Courses</h1>
+          </div>
+          <div class="col-sm-6">
+            <a href="{% url 'CreateCourses' %}" class="btn btn-primary">Add New Course</a>
+          </div>
+         
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+ <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">List of  Courses</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Instructor</th>
+                    <th>Duration</th>
+                  
+                   
+                  </tr>
+                  </thead>
+                  <tbody>
+                    {% for d in data %}
+                  <tr>
+                    <td><a href="{% url 'UpdateCourses' d.id %}" style="color:black"> {{d.name}} </a></td>
+                    <td><a href="{% url 'UpdateCourses' d.id %} "  style="color:black">{{d.instructor}} </a>
+                    </td>
+                    <td><a href="{% url 'UpdateCourses' d.id %}"  style="color:black"> {{d.duration}}</a></td>
+                  </tr>
+                  {% endfor %}
+                  
+                </tbody>
+                  <tfoot>
+                   
+                  <tr>
+                    <th>Name</th>
+                    <th>Instructor</th>
+                    <th>Duration</th>
+                  
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+         
+            <!-- /.card -->
+          </div>
+
+
+{% if Create %}
+           <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add New Course</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="post">
+                {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Name</label>
+                    <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Enter Name">
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Instructor</label>
+                    <input type="text" name="instructor" class="form-control" id="exampleInputEmail1" placeholder="Enter instructor">
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Duration</label>
+                    <input type="number" name="duration" class="form-control" id="exampleInputEmail1" placeholder="Enter Duration">
+                  </div>
+                
+                
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-6">
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+                
+                  <div class="col-6">
+                </div>
+            </div>
+              </form>
+            </div>
+            <!-- /.card -->
+
+         
+            <!-- /.card -->
+
+          </div>
+
+          {% endif %}
+{% if Update %}
+           <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Update Course</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="post">
+                {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input type="text" name="name" value="{{ student.name}}" class="form-control" id="exampleInputEmail1" placeholder="Enter Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Instructor</label>
+                    <input type="text" name="instructor" value="{{ student.instructor}}" class="form-control" id="exampleInputEmail1" placeholder="Enter instructor">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Duration</label>
+                    <input type="number" name="duration" value="{{ student.duration}}" class="form-control" id="exampleInputEmail1" placeholder="Enter duration">
+                  </div>
+             
+                
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-6">
+                  <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+                
+                  <div class="col-6">
+                  <a href="{% url 'DeleteCourses' student.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+              </form>
+            </div>
+            <!-- /.card -->
+
+         
+            <!-- /.card -->
+
+          </div>
+
+          {% endif %}
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
 {% endblock content %}
