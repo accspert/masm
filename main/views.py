@@ -4,8 +4,13 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login,logout
 from django.shortcuts import render, redirect,HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test,login_required
-from .models import Student as StudentData , Teacher as TeacherData , Course as CourseData
+from .models import Student as StudentData , Teacher as TeacherData , Course as CourseData  ,CourseSchedule
 # from .forms import SignupForm
+from .forms import CourseForm, CourseScheduleFormSet
+from django.http import HttpResponseRedirect 
+from django.urls import reverse
+from datetime import datetime, time, timedelta
+
 
 # login view
 def login_view(request):
@@ -31,7 +36,24 @@ def signup_view(request):
     return render(request, 'main/signup.html', {'form': form})
 @login_required(login_url='login')
 def index(request):
-    return render(request, 'main/index.html',{'user': request.user} )
+    classes=CourseSchedule.objects.all()
+    events = []
+    Days={'Sunday':0,"Monday":1,"Tuesday":2,"Wednesday":3,"Thursday":4,"Friday":5,"Saturday":6}
+    for class_ in classes:
+        day_index = Days[class_.day_of_week]
+        # Calculate the start and end times based on the current date and time
+        now = datetime.now()
+        start_datetime = now.replace(hour=class_.start_time.hour, minute=class_.start_time.minute, second=0, microsecond=0)
+        start_datetime += timedelta(days=(day_index - now.weekday()) % 7)
+        end_datetime = now.replace(hour=class_.end_time.hour, minute=class_.end_time.minute, second=0, microsecond=0)
+        end_datetime += timedelta(days=(day_index - now.weekday()) % 7)
+        events.append({
+            'title': class_.course.course_name,
+            'start': start_datetime.isoformat(),
+            'end': end_datetime.isoformat()
+        })
+    print(events)
+    return render(request, 'main/index.html',{'user': request.user,"events":events} )
 @login_required(login_url='login')
 def Courses(request):
     data = CourseData.objects.all()
@@ -47,7 +69,7 @@ def create_Course(request):
         duration = request.POST.get('duration')
        
 
-        Course = CourseData(name=name, instructor=instructor, duration=duration)
+        Course = CourseData(course_name=name, instructor_name=instructor, duration=duration)
         Course.save()
         return redirect('Courses')
 
@@ -58,17 +80,70 @@ def create_Course(request):
 def update_Course(request, Course_id):
     data = CourseData.objects.all()
     student = CourseData.objects.get(id=Course_id)
+    Days=['Sunday',"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+    newDys=[]
+    for day in Days:
+        newday={}
+        newday['Day']=day
+        
+        index=1
+        mysavedata=CourseSchedule.objects.filter(course=student,day_of_week=day)
+        if mysavedata.__len__()>=1:
+            newday['checked']=True
+        else:
+            newday['checked']=False
+        for d in mysavedata:
+            newday[f'slot_{index}_start']=d.start_time
+            newday[f'slot_{index}_end']=d.end_time
+            newday[f'slot_{index}_id']=d.pk
+            index++1
+        for i in range(index+1,4):
+            newday[f'slot_{i}_start']=''
+            newday[f'slot_{i}_end']=''
+            newday[f'slot_{i}_id']=''
+            
+        newDys.append(newday)
+    print(newDys)
 
+
+    
+    # myschedule=CourseSchedule.objects.filter(course=student)
+    
+    context = {'student': student , 'user': request.user, 'data':data, 'Update':True,'Days':newDys }
     if request.method == 'POST':
-        student.name = request.POST.get('name')
-        student.instructor = request.POST.get('instructor')
+        student.course_name = request.POST.get('name')
+        student.instructor_name = request.POST.get('instructor')
         student.duration = request.POST.get('duration')
         student.save()
+        for d in Days:
+            if request.POST.get(f'{d}'):
+                print(d)
+                myindexes=1
+                for i in range(myindexes,4):
+                    if request.POST.get(f'{d}-input-{i}-start')!= None:
+                        try:
+                            id=request.POST.get(f'{d}-input-{index}-id')
+                            schedulevalue=CourseSchedule.objects.get(pk=id)
+                            schedulevalue.start_time=request.POST.get(f'{d}-input-{i}-start')
+                            schedulevalue.end_time=request.POST.get(f'{d}-input-{i}-end')
+                            print(start_time,end_time)
+                            schedulevalue.save()
+                        except:
+                            start_time=request.POST.get(f'{d}-input-{i}-start')
+                            
+                            end_time=request.POST.get(f'{d}-input-{i}-end')
+                            print(start_time,end_time)
+                            sc=CourseSchedule(start_time=start_time,end_time=end_time,day_of_week=d,course=student)
+                            sc.save()
+                        
+                    
+                
+                
 
         return redirect('Courses')
 
-    context = {'student': student , 'user': request.user, 'data':data, 'Update':True }
-    return render(request, 'main/course.html', context)
+    print(context)
+    return render(request, 'main/course.html',context)
 
 
 
@@ -106,7 +181,6 @@ def create_Teacher(request):
 def update_Teacher(request, Teacher_id):
     data = TeacherData.objects.all()
     student = TeacherData.objects.get(id=Teacher_id)
-
     if request.method == 'POST':
         student.name = request.POST.get('name')
         student.surname = request.POST.get('surname')
@@ -193,3 +267,25 @@ def custom_404(request):
 
 def custom_403(request):
     return HttpResponse('<script>alert("Access forbidden") </script>')
+
+
+
+
+def course_update(request, course_id):
+    course = get_object_or_404(CourseData, pk=course_id)
+    schedules = CourseSchedule.objects.filter(course=course)
+    if request.method == 'POST':
+        course_form = CourseForm(request.POST, instance=course)
+        schedule_formset = CourseScheduleFormSet(request.POST)
+        if course_form.is_valid() and schedule_formset.is_valid():
+            course_form.save()
+            for form in schedule_formset:
+                if form.cleaned_data:
+                    schedule = form.save(commit=False)
+                    schedule.course = course
+                    schedule.save()
+            return HttpResponseRedirect(reverse('course_detail', args=(course.id,)))
+    else:
+        course_form = CourseForm(instance=course)
+        schedule_formset = CourseScheduleFormSet(queryset=schedules)
+    return render(request, 'main/testUpdatecourse.html', {'course_form': course_form, 'schedule_formset': schedule_formset})

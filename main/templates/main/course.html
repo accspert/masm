@@ -36,8 +36,8 @@
                   <tbody>
                     {% for d in data %}
                   <tr>
-                    <td><a href="{% url 'UpdateCourses' d.id %}" style="color:black"> {{d.name}} </a></td>
-                    <td><a href="{% url 'UpdateCourses' d.id %} "  style="color:black">{{d.instructor}} </a>
+                    <td><a href="{% url 'UpdateCourses' d.id %}" style="color:black"> {{d.course_name}} </a></td>
+                    <td><a href="{% url 'UpdateCourses' d.id %} "  style="color:black">{{d.instructor_name}} </a>
                     </td>
                     <td><a href="{% url 'UpdateCourses' d.id %}"  style="color:black"> {{d.duration}}</a></td>
                   </tr>
@@ -128,11 +128,11 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Name</label>
-                    <input type="text" name="name" value="{{ student.name}}" class="form-control" id="exampleInputEmail1" placeholder="Enter Name">
+                    <input type="text" name="name" value="{{ student.course_name}}" class="form-control" id="exampleInputEmail1" placeholder="Enter Name">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Course Instructor</label>
-                    <input type="text" name="instructor" value="{{ student.instructor}}" class="form-control" id="exampleInputEmail1" placeholder="Enter instructor">
+                    <input type="text" name="instructor" value="{{ student.instructor_name}}" class="form-control" id="exampleInputEmail1" placeholder="Enter instructor">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Course Duration</label>
@@ -143,8 +143,50 @@
                 </div>
                 <!-- /.card-body -->
 
-                <div class="card-footer">
-                    <div class="row">
+                <div class="card-body">
+                   
+
+
+
+
+<!-- Bootstrap Checkbox -->
+ <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Slot 1</th>
+                    <th>Slot 2</th>
+                    <th>Slot 3</th>
+                  
+                   
+                  </tr>
+                  </thead>
+                  <tbody>
+               {% for day in Days %}
+                  <tr>
+                    <td><label for="{{day.Day}}">{{day.Day}}:</label>
+                      {% if day.checked %}
+                      <input type="checkbox" id="{{day.Day}}" name="{{day.Day}}" checked></td>
+                      {% else %}
+                      <input type="checkbox" id="{{day.Day}}" name="{{day.Day}}" ></td>
+                      {% endif %}
+                    <td>
+                     
+              <input type="hidden"  name="{{day.Day}}-input-1-id"  value='{{day.slot_1_id}}'>
+              <input type="time" id="{{day.Day}}-input-1" name="{{day.Day}}-input-1-start" disabled value='{{day.slot_1_start|time:"H:i"}}'>
+    <input type="time" id="{{day.Day}}-input-2" name="{{day.Day}}-input-1-end" disabled value='{{day.slot_1_end|time:"H:i"}}'>                    </td>
+    <input type="hidden"  name="{{day.Day}}-input-2-id"  value='{{day.slot_2_id}}'>                
+    <td><input type="time" id="{{day.Day}}-input-3" name="{{day.Day}}-input-2-start" disabled value='{{day.slot_2_start|time:"H:i"}}'>
+    <input type="time" id="{{day.Day}}-input-4" name="{{day.Day}}-input-2-end" disabled value='{{day.slot_2_end|time:"H:i"}}'></td>
+                    <td>
+                      <input type="hidden"  name="{{day.Day}}-input-3-id"  value='{{day.slot_3_id}}'>
+                       <input type="time" id="{{day.Day}}-input-5" name="{{day.Day}}-input-3-start" disabled value='{{day.slot_3_start|time:"H:i"}}'>
+    <input type="time" id="{{day.Day}}-input-6" name="{{day.Day}}-input-3-end" disabled value='{{day.slot_3_end|time:"H:i"}}'></td>
+                  </tr>
+                 {% endfor %}
+                </tbody>
+              </table>
+               <div class="row">
                         <div class="col-6">
                   <button type="submit" class="btn btn-primary">Update</button>
                 </div>
@@ -169,4 +211,118 @@
       </div>
       <!-- /.container-fluid -->
     </section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+   {% for day in Days %}
+  // Enable or disable the input fields when the checkbox is checked or unchecked
+  $('#{{day.Day}}').on('change', function() {
+    if (this.checked) {
+      $('#{{day.Day}}-input-1').prop('disabled', false);
+      $('#{{day.Day}}-input-1').prop('required', true);
+    } else {
+      $('#{{day.Day}}-input-1').prop('disabled', true);
+    $('#{{day.Day}}-input-2').prop('disabled', true);
+    $('#{{day.Day}}-input-3').prop('disabled', true);
+    $('#{{day.Day}}-input-4').prop('disabled', true);
+    $('#{{day.Day}}-input-5').prop('disabled', true);
+    $('#{{day.Day}}-input-6').prop('disabled', true);
+    } 
+  });
+ $(document).ready(function() {
+  if ($('#{{day.Day}}').is(':checked')) {
+    $('#{{day.Day}}-input-1').prop('disabled', false);
+    $('#{{day.Day}}-input-1').prop('required', true);
+  } else {
+    $('#{{day.Day}}-input-1').prop('disabled', true);
+    $('#{{day.Day}}-input-2').prop('disabled', true);
+    $('#{{day.Day}}-input-3').prop('disabled', true);
+    $('#{{day.Day}}-input-4').prop('disabled', true);
+    $('#{{day.Day}}-input-5').prop('disabled', true);
+    $('#{{day.Day}}-input-6').prop('disabled', true);
+  }
+});
+
+  // Add a change event listener to the first input field for each input pair for {{day}}
+  $('#{{day.Day}}-input-1').on('change', function() {
+    // If the first input field is filled, enable the second input field of the first input pair
+    if ($(this).val() !== '') {
+      $('#{{day.Day}}-input-2').prop('disabled', false);
+      $('#{{day.Day}}-input-2').prop('required', true );
+    } else {
+      $('#{{day.Day}}-input-2').prop('disabled', true);
+      $('#{{day.Day}}-input-3').prop('disabled', true);
+      $('#{{day.Day}}-input-4').prop('disabled', true);
+      $('#{{day}}-input-5').prop('disabled', true);
+      $('#{{day.Day}}-input-6').prop('disabled', true);
+    }
+  });
+
+
+  $(document).ready(function() {
+ // If the first input field is filled, enable the second input field of the first input pair
+    if ($('#{{day.Day}}-input-1').val() !== '') {
+      $('#{{day.Day}}-input-2').prop('disabled', false);
+      $('#{{day.Day}}-input-2').prop('required', true );
+    } else {
+      $('#{{day.Day}}-input-2').prop('disabled', true);
+      $('#{{day.Day}}-input-3').prop('disabled', true);
+      $('#{{day.Day}}-input-4').prop('disabled', true);
+      $('#{{day.Day}}-input-5').prop('disabled', true);
+      $('#{{day.Day}}-input-6').prop('disabled', true);
+    }
+});
+  
+  $('#{{day.Day}}-input-2').on('change', function() {
+    // If the second input field is filled, enable the first input field of the second input pair
+    if ($(this).val() !== '') {
+      $('#{{day.Day}}-input-3').prop('disabled', false);
+      $('#{{day.Day}}-input-3').prop('required', false);
+    } else {
+      $('#{{day.Day}}-input-3').prop('disabled', true);
+      $('#{{day.Day}}-input-4').prop('disabled', true);
+      $('#{{day.Day}}-input-5').prop('disabled', true);
+      $('#{{day.Day}}-input-6').prop('disabled', true);
+    }
+  });
+  
+  $('#{{day.Day}}-input-3').on('change', function() {
+    // If the first input field of the second input pair is filled, enable the second input field of the second input pair
+    if ($(this).val() !== '') {
+      $('#{{day.Day}}-input-4').prop('disabled', false);
+      $('#{{day}}-input-4').prop('required', true);
+    } else {
+      $('#{{day.Day}}-input-4').prop('disabled', true);
+      $('#{{day.Day}}-input-5').prop('disabled', true);
+      $('#{{day.Day}}-input-6').prop('disabled', true);
+    }
+  });
+  
+$('#{{day.Day}}-input-4').on('change', function() {
+// If the second input field of the second input pair is filled, enable the first input field of the third input pair
+if ($(this).val() !== '') {
+$('#{{day.Day}}-input-5').prop('disabled', false);
+$('#{{day}}-input-5').prop('required', false);
+} else {
+$('#{{day.Day}}-input-5').prop('disabled', true);
+$('#{{day.Day}}-input-6').prop('disabled', true);
+}
+});
+
+$('#{{day.Day}}-input-5').on('change', function() {
+// If the first input field of the third input pair is filled, enable the second input field of the third input pair
+if ($(this).val() !== '') {
+$('#{{day.Day}}-input-6').prop('disabled', false);
+$('#{{day.Day}}-input-6').prop('required', true);
+} else {
+$('#{{day.Day}}-input-6').prop('disabled', true);
+}
+});
+
+  {% endfor %}
+</script>
+
 {% endblock content %}

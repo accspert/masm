@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ltl8znb9@vr@2qx&a$aiu@3b5))5rk220+n^qzn84u)(7opb4-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['business-software-for-free.de','hosting182769.a2f81.netcup.net']
+ALLOWED_HOSTS = ['business-software-for-free.de','hosting182769.a2f81.netcup.net','127.0.0.1']
 
 
 # Application definition
@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'djangobower',
+    'schedule'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +53,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'MartialArtSchoolManagementSystem.urls'
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'jquery-ui',
+    'bootstrap',
+    'fullcalendar#3.8.2'
+)
 
 TEMPLATES = [
     {
@@ -60,6 +68,8 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                "django.template.context_processors.request",
+
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -128,7 +138,11 @@ STATICFILES_DIRS=[
     os.path.join(BASE_DIR, 'static'),
     BASE_DIR / "static",
 ]
-
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

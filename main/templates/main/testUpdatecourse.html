@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h1>Edit {{ course.course_name }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ course_form.as_p }}
+    {{ schedule_formset.management_form }}
+    <table>
+      <thead>
+        <tr>
+          <th>Day of Week</th>
+         
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for form in formset.forms %}
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            {{ form.day_of_week.label_tag }}
+            {% for day in form.day_of_week %}
+                {{ day }}
+                {{ day.choice_label }}
+            {% endfor %}
+        </div>
+        <div class="form-group col-md-4">
+            {{ form.start_time.label_tag }}
+            {{ form.start_time }}
+        </div>
+        <div class="form-group col-md-4">
+            {{ form.end_time.label_tag }}
+            {{ form.end_time }}
+        </div>
+    </div>
+{% endfor %}
+
+  </tbody>
+</table>
+<input type="submit" value="Save">
+ </form>
+{% endblock %}
