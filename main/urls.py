@@ -24,8 +24,7 @@ urlpatterns = [
     path('UpdateCourses/<int:Course_id>', update_Course, name='UpdateCourses'),
     path('DeleteCourses/<int:Course_id>', delete_Courses, name='DeleteCourses'),
 
-
-
+    
     path('Courses/', Courses, name='Courses'),
     path('Teacher/', Teacher, name='Teacher'),
     path('logout/', logout_view, name='logout'),
