@@ -2,11 +2,33 @@
   <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-          <div class="col-sm-6">
+          <div class="col-sm-2">
             <h1>Students</h1>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <a href="{% url 'CreateStudent' %}" class="btn btn-primary">Add New Student</a>
+          </div>
+          <div class="col-sm-6">
+            {% if Search %}
+            <form method="post">
+                {% csrf_token %}
+               <div class="row">
+                <div class="col-sm-6">
+
+                  <div class="form-group">
+                    <input type="text" name="searchBox" class="form-control" id="exampleInputEmail1" placeholder="Search">
+                  </div>
+                
+                </div>
+                <div class="col-sm-6">
+
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+               </div>
+             
+               
+              </form>
+            {% endif %}
           </div>
          
         </div>

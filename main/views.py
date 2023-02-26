@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login,logout
 from django.shortcuts import render, redirect,HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test,login_required
-from .models import Student as StudentData , Teacher as TeacherData , Course as CourseData  ,CourseSchedule
+from .models import Student as StudentData , Teacher as TeacherData , Course as CourseData  ,CourseSchedule , Belt
 # from .forms import SignupForm
 from .forms import CourseForm, CourseScheduleFormSet
 from django.http import HttpResponseRedirect 
@@ -207,7 +207,11 @@ def delete_Teacher(request, Teacher_id):
 @login_required(login_url='login')
 def Student(request):
     data = StudentData.objects.all()
-    return render(request, 'main/student.html',{'user': request.user, 'data':data} )
+    if request.method == 'POST':
+        searchBox = request.POST.get('searchBox')
+        data=StudentData.objects.filter(name=searchBox)
+
+    return render(request, 'main/student.html',{'user': request.user, 'data':data, 'Search':True} )
 @login_required(login_url='login')
 def create_student(request):
     data = StudentData.objects.all()
@@ -257,7 +261,8 @@ def delete_student(request, student_id):
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_superuser, login_url='/forbidden/')
 def admin_view(request):
-    return render(request, 'main/admin.html',{'user': request.user} )
+    belts=Belt.objects.filter(user=request.user)
+    return render(request, 'main/admin.html',{'user': request.user,'Belts':belts} )
 
 def logout_view(request):
     logout(request)
@@ -289,3 +294,49 @@ def course_update(request, course_id):
         course_form = CourseForm(instance=course)
         schedule_formset = CourseScheduleFormSet(queryset=schedules)
     return render(request, 'main/testUpdatecourse.html', {'course_form': course_form, 'schedule_formset': schedule_formset})
+
+
+
+
+# 
+@login_required(login_url='login')
+def create_Belt(request):
+    belts=Belt.objects.filter(user=request.user)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        des = request.POST.get('description')
+       
+
+        student = Belt(name=name, description=des, user=request.user)
+        student.save()
+        return redirect('myadmin')
+
+    # return render(request, 'main/student.html',{'user': request.user, , 'data':data})
+    return render(request, 'main/admin.html',{'user': request.user,'Belts':belts,'Create':True} )
+
+# here is update view for belts in user data
+
+
+@login_required(login_url='login')
+def update_Belt(request, belt_id):
+    belts=Belt.objects.filter(user=request.user)
+    student = Belt.objects.get(id=belt_id)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        des = request.POST.get('description')
+        student.name=name
+        student.description=des
+        student.save()
+
+        return redirect('myadmin')
+
+    context = {'student': student ,  'Page':'List','user': request.user,'Belts':belts, 'Update':True }
+    return render(request,'main/admin.html', context)
+
+@login_required(login_url='login')
+def delete_belt(request, belt_id):
+    student = get_object_or_404(Belt, pk=belt_id)
+    student.delete()
+    return redirect('myadmin')
+

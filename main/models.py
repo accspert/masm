@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -43,3 +44,10 @@ class CourseSchedule(models.Model):
     day_of_week = models.CharField(max_length=30, choices=DAYS_OF_WEEK)
     start_time = models.TimeField()
     end_time = models.TimeField()                            
+
+
+
+class Belt(models.Model):
+    name=models.CharField(max_length=300)
+    description=models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

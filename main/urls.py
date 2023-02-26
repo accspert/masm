@@ -25,6 +25,11 @@ urlpatterns = [
     path('DeleteCourses/<int:Course_id>', delete_Courses, name='DeleteCourses'),
 
 
+    path('CreateBelt/', create_Belt, name='CreateBelt'),
+    path('UpdateBelt/<int:belt_id>', update_Belt, name='UpdateBelt'),
+    path('DeleteBelt/<int:belt_id>', delete_belt, name='DeleteBelt'),
+
+
 
     path('Courses/', Courses, name='Courses'),
     path('Teacher/', Teacher, name='Teacher'),
