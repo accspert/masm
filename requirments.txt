@@ -2,6 +2,5 @@
 Django==4.1.5
 sqlparse==0.4.3
 tzdata==2022.7
-django-bower==5.2.0
 django-storages==1.13.2
 schedule==1.1.0
