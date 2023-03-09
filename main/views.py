@@ -9,9 +9,6 @@ from .models import Student, Teacher
 
 class LoginView(TemplateView):
     def get(self, request, *args, **kwargs):
-        # redirect to Student page if user is logged in
-        if request.user.is_authenticated:
-            return redirect("students")
         return render(request, "login.html")
 
     def post(self, request, *args, **kwargs):
@@ -28,10 +25,6 @@ class LoginView(TemplateView):
 
 class SignUpView(TemplateView):
     def get(self, request, *args, **kwargs):
-        
-        # redirect to Student page if user is logged in
-        if request.user.is_authenticated:
-            return redirect("students")
         return render(request, "signup.html")
 
     def post(self, request, *args, **kwargs):
