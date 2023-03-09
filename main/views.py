@@ -7,6 +7,63 @@ from django.views.generic import TemplateView
 from .models import Student, Teacher
 
 
+class LoginView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "login.html")
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST.get("email", None)
+        password = request.POST.get("password", None)
+
+        user = authenticate(username=username, password=password)
+        if not user:
+            messages.error(request, "Email address or password is incorrect")
+            return render(request, "login.html")
+        login(request, user)
+        return redirect("students")
+
+
+class SignUpView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "signup.html")
+
+    def post(self, request, *args, **kwargs):
+
+        # get data from the frontend
+        first_name = request.POST.get("first_name", None)
+        last_name = request.POST.get("last_name", None)
+        email = request.POST.get("email", None)
+        password = request.POST.get("password", None)
+        username = email
+        password = make_password(password)
+
+        # check if user is already exist
+        if User.objects.filter(email=username).exists():
+            messages.error(request, "Email already exists")
+            return render(request, "signup.html")
+
+        # insert user
+        user = User.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            username=username,
+            email=email,
+            password=password,
+        )
+        if user:
+            messages.info(request, "Successfully registered. Please login")
+            return redirect("students")
+        else:
+            messages.error(request, "Something went wrong. Please try again")
+            return render(request, "signup.html")
+
+
+class LogOutView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect("login")
+
+
 class IndexView(TemplateView):
     def get(self, request, *args, **kwargs):
         return render(request, "base.html")
