@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <title>Sign UP | MASM</title>
+</head>
+
+<body>
+    <main class="main">
+        <div class="container">
+            <section class="wrapper">
+                <div class="heading">
+                    <h1 class="text text-large">Sign Up</h1>
+                    <p class="text text-normal">Already have an account? <span><a href="/login"
+                                class="text text-links">Signin</a></span>
+                    </p>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form name="signin" class="form" method="POST">
+                    {% csrf_token %}
+                    <div class="input-control">
+                        <label for="first_name" class="input-label" hidden>First Name</label>
+                        <input type="text" name="first_name" id="first_name" class="input-field"
+                            placeholder="First Name" required>
+                    </div>
+                    <div class="input-control">
+                        <label for="last_name" class="input-label" hidden>Last Name</label>
+                        <input type="text" name="last_name" id="last_name" class="input-field" placeholder="Last Name">
+                    </div>
+                    <div class="input-control">
+                        <label for="email" class="input-label" hidden>Email Address</label>
+                        <input type="email" name="email" id="email" class="input-field" placeholder="Email Address" ,
+                            required>
+                    </div>
+                    <div class="input-control">
+                        <label for="password" class="input-label" hidden>Password</label>
+                        <input type="password" name="password" id="password" class="input-field" placeholder="Password"
+                            , required>
+                    </div>
+                    <div class="input-control">
+                        <input type="submit" name="submit" class="input-submit" value="Sign Up">
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+</body>
+
+</html>
