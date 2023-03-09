@@ -1,42 +1,25 @@
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 
-from .views import *
- 
+from .views import (
+    IndexView, LoginView, LogOutView,
+    SignUpView, StudentView,
+    TeacherView, UpdateRecordView,
+    AddRecordView, DeleteRecordView
+    )
+
+
 urlpatterns = [
-    path('', index,name="home"),
-     path('login/', login_view, name='login'),
-    path('signup/', signup_view, name='signup'),
-    path('myadmin/', admin_view, name='myadmin'),
-    path('Student/', Student, name='Student'),
-    path('CreateStudent/', create_student, name='CreateStudent'),
-    path('UpdateStudent/<int:student_id>', update_student, name='UpdateStudent'),
-    path('DeleteStudent/<int:student_id>', delete_student, name='DeleteStudent'),
-
-
-    path('CreateTeacher/', create_Teacher, name='CreateTeacher'),
-    path('UpdateTeacher/<int:Teacher_id>', update_Teacher, name='UpdateTeacher'),
-    path('DeleteTeacher/<int:Teacher_id>', delete_Teacher, name='DeleteTeacher'),
-
-
-    path('CreateCourses/', create_Course, name='CreateCourses'),
-    path('UpdateCourses/<int:Course_id>', update_Course, name='UpdateCourses'),
-    path('DeleteCourses/<int:Course_id>', delete_Courses, name='DeleteCourses'),
-
-
-    path('CreateBelt/', create_Belt, name='CreateBelt'),
-    path('UpdateBelt/<int:belt_id>', update_Belt, name='UpdateBelt'),
-    path('DeleteBelt/<int:belt_id>', delete_belt, name='DeleteBelt'),
-
-
-
-    path('Courses/', Courses, name='Courses'),
-    path('Teacher/', Teacher, name='Teacher'),
-    path('logout/', logout_view, name='logout'),
-    path('notfound/', custom_404, name='notfound'),
-    path('forbidden/', custom_403, name='forbidden'),
+    path('login/', LoginView.as_view(), name="login"),
+    path('signup/', SignUpView.as_view(), name="signup"),
+    path('logout/', login_required(LogOutView.as_view()), name="logout"),
+    path('', login_required(IndexView.as_view()), name="index"),
+    path('students/', login_required(StudentView.as_view()), name='students'),
+    path('teachers/', login_required(TeacherView.as_view()), name="teachers"),
+    path('add/<str:record_type>/', login_required(
+        AddRecordView.as_view()), name="add_record"),
+    path('<str:record_type>/<int:id>', login_required(
+        UpdateRecordView.as_view()), name="update_records"),
+    path('add/<str:record_type>/<int:id>', login_required(
+        DeleteRecordView.as_view()), name="delete_record")
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
