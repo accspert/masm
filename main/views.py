@@ -7,12 +7,6 @@ from django.views.generic import TemplateView
 from .models import Student, Teacher
 
 
-class LogOutView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return redirect("login")
-
-
 class IndexView(TemplateView):
     def get(self, request, *args, **kwargs):
         return render(request, "base.html")
