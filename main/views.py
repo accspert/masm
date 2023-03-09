@@ -11,7 +11,7 @@ class LoginView(TemplateView):
     def get(self, request, *args, **kwargs):
 
         # redirect to Student page if user is logged in
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect("students")
         return render(request, "login.html")
 
@@ -31,7 +31,7 @@ class SignUpView(TemplateView):
     def get(self, request, *args, **kwargs):
 
         # redirect to Student page if user is logged in
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect("students")
         return render(request, "signup.html")
 
