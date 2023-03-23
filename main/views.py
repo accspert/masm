@@ -1,143 +1,77 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.views.generic import TemplateView
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student, Teacher
+from .forms import StudentForm, TeacherForm
 
 
-class LoginView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "login.html")
-
-    def post(self, request, *args, **kwargs):
-        username = request.POST.get("email", None)
-        password = request.POST.get("password", None)
-
-        user = authenticate(username=username, password=password)
-        if not user:
-            messages.error(request, "Email address or password is incorrect")
-            return render(request, "login.html")
-        login(request, user)
-        return redirect("students")
+def create_student(request):
+    form = StudentForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('student_list')
+    context = {'form': form, 'record_type': 'student'}
+    return render(request, 'create_record.html', context)
 
 
-class SignUpView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "signup.html")
-
-    def post(self, request, *args, **kwargs):
-
-        # get data from the frontend
-        first_name = request.POST.get("first_name", None)
-        last_name = request.POST.get("last_name", None)
-        email = request.POST.get("email", None)
-        password = request.POST.get("password", None)
-        username = email
-        password = make_password(password)
-
-        # check if user is already exist
-        if User.objects.filter(email=username).exists():
-            messages.error(request, "Email already exists")
-            return render(request, "signup.html")
-
-        # insert user
-        user = User.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            username=username,
-            email=email,
-            password=password,
-        )
-        if user:
-            messages.info(request, "Successfully registered. Please login")
-            return redirect("students")
-        else:
-            messages.error(request, "Something went wrong. Please try again")
-            return render(request, "signup.html")
+def update_student(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    form = StudentForm(request.POST or None, instance=student)
+    if form.is_valid():
+        form.save()
+        return redirect('student_list')
+    context = {'form': form, 'record_type': 'student',
+               'record_id': student.id, 'delete_url': 'delete_student'}
+    return render(request, 'update_record.html', context)
 
 
-class LogOutView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return redirect("login")
+def delete_student(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == 'POST':
+        student.delete()
+        return redirect('student_list')
+    context = {'record': student, 'record_type': 'student',
+               'redirect_url': 'student_list'}
+    return render(request, 'delete_record.html', context)
 
 
-class IndexView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "base.html")
+def student_list(request):
+    students = Student.objects.all()
+    context = {'records': students, 'record_type': 'Student',
+               'create_url': 'create_student', 'update_url': 'update_student'}
+    return render(request, 'record_list.html', context)
 
 
-class StudentView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        # fetch student data
-        students = Student.objects.all()
-        context = {"students": students}
-        return render(request, "students.html", context)
+def create_teacher(request):
+    form = TeacherForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('teacher_list')
+    context = {'form': form, 'record_type': 'teacher'}
+    return render(request, 'create_record.html', context)
 
 
-class TeacherView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        # fetch teachers data
-        teachers = Teacher.objects.all()
-        context = {"teachers": teachers}
-        return render(request, "teachers.html", context)
+def update_teacher(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+    form = TeacherForm(request.POST or None, instance=teacher)
+    if form.is_valid():
+        form.save()
+        return redirect('teacher_list')
+    context = {'form': form, 'record_type': 'teacher',
+               'record_id': teacher.id, 'delete_url': 'delete_teacher'}
+    return render(request, 'update_record.html', context)
 
 
-class AddRecordView(TemplateView):
-    def get(self, request, record_type, *args, **kwargs):
-        return render(request, "add_record.html", {'record_type': record_type})
-
-    def post(self, request, record_type, *args, **kwargs):
-        if record_type == "teachers":
-            model = Teacher
-        else:
-            model = Student
-
-        name = request.POST.get('name')
-        surname = request.POST.get('surname')
-        birthdate = request.POST.get('birthdate')
-        street_nr = request.POST.get('street_nr')
-        model.objects.create(name=name, surname=surname,
-                             birthdate=birthdate, street_nr=street_nr)
-        return redirect(f"/{record_type}")
+def delete_teacher(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+    if request.method == 'POST':
+        teacher.delete()
+        return redirect('teacher_list')
+    context = {'record': teacher, 'record_type': 'teacher',
+               'redirect_url': 'teacher_list'}
+    return render(request, 'delete_record.html', context)
 
 
-class UpdateRecordView(TemplateView):
-
-    def get(self, request, record_type, id, *args, **kwargs):
-
-        if record_type == "teachers":
-            record = Teacher.objects.get(id=id)
-            template_name = "teachers.html"
-        else:
-            record = Student.objects.get(id=id)
-            template_name = "students.html"
-
-        context = {"data": record, "update": True}
-        return render(request, template_name, context)
-
-    def post(self, request, record_type, id, *args, **kwargs):
-
-        if record_type == "teachers":
-            record = Teacher.objects.get(id=id)
-        else:
-            record = Student.objects.get(id=id)
-
-        # get data from template
-        record.name = request.POST.get('name')
-        record.surname = request.POST.get('surname')
-        record.birthdate = request.POST.get('birthdate')
-        record.street_nr = request.POST.get('street_nr')
-        record.save()
-        return redirect(f"/{record_type}")
-
-
-class DeleteRecordView(TeacherView):
-    def get(self, request, record_type, id, *args, **kwargs):
-        if record_type == "teachers":
-            Teacher.objects.get(id=id).delete()
-        else:
-            Student.objects.get(id=id).delete()
-        return redirect(f"/{record_type}")
+def teacher_list(request):
+    teachers = Teacher.objects.all()
+    context = {'records': teachers, 'record_type': 'Teacher',
+               'create_url': 'create_teacher', 'update_url': 'update_teacher'}
+    return render(request, 'record_list.html', context)

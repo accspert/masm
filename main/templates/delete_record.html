@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="col-12">
+  <h1>Delete {{ record_type }}</h1>
+  <p>Are you sure you want to delete {{ record }}?</p>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-1">
+          <button type="submit" class="btn btn-danger">Yes</button>
+      </div>
+      <div class="col-1">
+          <a href="{% url redirect_url %}"
+              class="btn btn-success">Cancel</a>
+      </div>
+  </div>
+  </form>
+</div>
+{% endblock %}

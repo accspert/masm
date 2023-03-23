@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="col-12">
+  <h1>{{ record_type }} List</h1>
+  <a type="button" class="btn btn-primary w-25" href="{% url create_url %}">Add New</a>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Surname</th>
+        <th scope="col">Birthdate</th>
+        <th scope="col">Street/Nr</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in records %}
+      <tr>
+        <td><a href="{% url update_url pk=record.id %}"> {{ record.name }} </a></td>
+        <td>{{ record.surname }}</td>
+        <td>{{ record.birthdate }}</td>
+        <td>{{ record.street_nr }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No {{ record_type }} found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
