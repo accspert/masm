@@ -1,8 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student, Teacher
 from .forms import StudentForm, TeacherForm
 
 
+# login_required to guarantee that the user is authenticated, before he can interacte with the database
+
+@login_required
 def create_student(request):
     form = StudentForm(request.POST or None)
     if form.is_valid():
@@ -12,6 +16,7 @@ def create_student(request):
     return render(request, 'create_record.html', context)
 
 
+@login_required
 def update_student(request, pk):
     student = get_object_or_404(Student, pk=pk)
     form = StudentForm(request.POST or None, instance=student)
@@ -23,6 +28,7 @@ def update_student(request, pk):
     return render(request, 'update_record.html', context)
 
 
+@login_required
 def delete_student(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == 'POST':
@@ -33,6 +39,7 @@ def delete_student(request, pk):
     return render(request, 'delete_record.html', context)
 
 
+@login_required
 def student_list(request):
     students = Student.objects.all()
     context = {'records': students, 'record_type': 'Student',
@@ -40,6 +47,7 @@ def student_list(request):
     return render(request, 'record_list.html', context)
 
 
+@login_required
 def create_teacher(request):
     form = TeacherForm(request.POST or None)
     if form.is_valid():
@@ -49,6 +57,7 @@ def create_teacher(request):
     return render(request, 'create_record.html', context)
 
 
+@login_required
 def update_teacher(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
     form = TeacherForm(request.POST or None, instance=teacher)
@@ -60,6 +69,7 @@ def update_teacher(request, pk):
     return render(request, 'update_record.html', context)
 
 
+@login_required
 def delete_teacher(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
     if request.method == 'POST':
@@ -70,6 +80,7 @@ def delete_teacher(request, pk):
     return render(request, 'delete_record.html', context)
 
 
+@login_required
 def teacher_list(request):
     teachers = Teacher.objects.all()
     context = {'records': teachers, 'record_type': 'Teacher',

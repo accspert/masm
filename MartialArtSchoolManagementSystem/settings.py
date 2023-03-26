@@ -45,6 +45,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "main",
+
+    # Django all-auth
+    'allauth',
+    'allauth.account',
+    #'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -139,4 +144,12 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_URL = "/login"
+
+# Changed to suite for django-all auth.
+LOGIN_URL = "account_login"
+
+# Redirect the user who signed up to the login page
+ACCOUNT_SIGNUP_REDIRECT_URL = "account_login"
+
+# Change this to another url if you want to redirect the user after a successful login
+LOGIN_REDIRECT_URL = "student_list"

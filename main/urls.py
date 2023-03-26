@@ -4,6 +4,7 @@ from .views import (
     teacher_list, create_teacher, update_teacher, delete_teacher)
 
 urlpatterns = [
+
     path('students/', student_list, name='student_list'),
     path('students/create/', create_student, name='create_student'),
     path('students/<int:pk>/update/', update_student, name='update_student'),

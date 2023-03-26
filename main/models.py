@@ -4,6 +4,31 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
+# As proposal for a better structure:
+# Comment it out& migrate it if you want to code more dry
+
+'''class BaseModel(models.Model):
+    """A base model uses abstract=True and is only a placeholder for similar models such as Student, Teacher"""
+    name = models.CharField(max_length=255)
+    surname = models.CharField(max_length=255)
+    birthdate = models.DateField()
+    street_nr = models.CharField(max_length=255)
+    
+    class Meta:
+        abstract = True
+    
+    def __str__(self):
+        return f"{self.name} {self.surname}"
+
+
+class Student(BaseModel):
+    pass
+
+
+class Teacher(BaseModel):
+    pass'''
+
+
 class Student(models.Model):
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)

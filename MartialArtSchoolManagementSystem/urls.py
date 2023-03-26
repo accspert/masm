@@ -6,4 +6,8 @@ from django.conf import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("main.urls")),
-]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+    # accounts holds all user related urls
+    path('accounts/', include('allauth.urls')),
+
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
