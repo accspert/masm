@@ -3,3 +3,4 @@ svglib
 qrbill
 weasyprint
 django-allauth
+django-htmx

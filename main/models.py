@@ -32,7 +32,7 @@ class Teacher(BaseModel):
 class Student(models.Model):
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    birthdate = models.DateField()
+    birthdate = models.DateField(null=True, blank=True)
     street_nr = models.CharField(max_length=255)
 
     def __str__(self):
@@ -42,7 +42,7 @@ class Student(models.Model):
 class Teacher(models.Model):
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    birthdate = models.DateField()
+    birthdate = models.DateField(null=True, blank=True)
     street_nr = models.CharField(max_length=255)
 
     def __str__(self):

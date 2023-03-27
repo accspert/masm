@@ -1,25 +1,61 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="col-12">
+<script src="https://unpkg.com/htmx.org@1.8.6" integrity="sha384-Bj8qm/6B+71E6FQSySofJOUjA/gq330vEqjFx9LakWybUySyI1IQHwPtbTU7bNwx" crossorigin="anonymous"></script>
+
+<div class="col-6">
   <h1>{{ record_type }} List</h1>
-  <a type="button" class="btn btn-primary w-25" href="{% url create_url %}">Add New</a>
+  <a type="button" class="btn btn-primary w-25" hx-get="{% url create_url %}" hx-target="#create">Add New</a>
   <table class="table table-bordered mt-3">
     <thead>
       <tr>
+        {% if record_type == "course" %}
+        <th scope="col">Course name</th>
+        <th scope="col">Instructor</th>
+        <th scope="col">duration</th>
+        {% else %}
         <th scope="col">Name</th>
         <th scope="col">Surname</th>
         <th scope="col">Birthdate</th>
         <th scope="col">Street/Nr</th>
+      {% endif %}
       </tr>
     </thead>
     <tbody>
       {% for record in records %}
       <tr>
-        <td><a href="{% url update_url pk=record.id %}"> {{ record.name }} </a></td>
+
+        {% if record_type == "course" %}
+
+                 <td><a class="btn btn-secondary btn-sm"
+               hx-get="{% url update_url record.id %}"
+               hx-target="#create"> {{ record.course_name }} </a>
+
+          <td>
+         {{ record.instructor.name }}
+        </td>
+
+        <td>
+         {{ record.duration }}
+        </td>
+        {% else %}
+        <td><a class="btn btn-secondary btn-sm"
+               hx-get="{% url update_url record.id %}"
+               hx-target="#create"> {{ record.name }} </a>
+        </td>
         <td>{{ record.surname }}</td>
         <td>{{ record.birthdate }}</td>
         <td>{{ record.street_nr }}</td>
+          {% endif %}
+        <td>
+
+          <!--delete it -->
+        <form method="POST" action="{% url delete_url record.id %}">
+          {% csrf_token %}
+        <button type="submit" class="btn btn-warning btn-sm">Delete</button>
+        </form>
+
+        </td>
       </tr>
       {% empty %}
       <tr>
@@ -28,5 +64,9 @@
       {% endfor %}
     </tbody>
   </table>
+</div>
+
+<div class="col-6" id="create">
+
 </div>
 {% endblock %}
