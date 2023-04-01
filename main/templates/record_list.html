@@ -5,6 +5,16 @@
 
 <div class="col-6">
   <h1>{{ record_type }} List</h1>
+
+{% if record_type == "Student" %}
+
+<form method="get" class="mb-4">
+  {{ filter.form.as_p }}
+  <button type="submit">Filter</button>
+</form>
+
+{% endif %}
+
   <a type="button" class="btn btn-primary w-25" hx-get="{% url create_url %}" hx-target="#create">Add New</a>
   <table class="table table-bordered mt-3">
     <thead>
@@ -22,6 +32,8 @@
       </tr>
     </thead>
     <tbody>
+    {% if not filter.qs %}
+
       {% for record in records %}
       <tr>
 
@@ -62,6 +74,52 @@
         <td colspan="4">No {{ record_type }} found.</td>
       </tr>
       {% endfor %}
+
+      {% else %}
+
+      {% for record in filter.qs %}
+
+      <tr>
+
+        {% if record_type == "course" %}
+
+                 <td><a class="btn btn-secondary btn-sm"
+               hx-get="{% url update_url record.id %}"
+               hx-target="#create"> {{ record.course_name }} </a>
+
+          <td>
+         {{ record.instructor.name }}
+        </td>
+
+        <td>
+         {{ record.duration }}
+        </td>
+        {% else %}
+        <td><a class="btn btn-secondary btn-sm"
+               hx-get="{% url update_url record.id %}"
+               hx-target="#create"> {{ record.name }} </a>
+        </td>
+        <td>{{ record.surname }}</td>
+        <td>{{ record.birthdate }}</td>
+        <td>{{ record.street_nr }}</td>
+          {% endif %}
+        <td>
+
+          <!--delete it -->
+        <form method="POST" action="{% url delete_url record.id %}">
+          {% csrf_token %}
+        <button type="submit" class="btn btn-warning btn-sm">Delete</button>
+        </form>
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No {{ record_type }} found.</td>
+      </tr>
+      {% endfor %}
+
+      {% endif %}
     </tbody>
   </table>
 </div>
@@ -69,4 +127,5 @@
 <div class="col-6" id="create">
 
 </div>
+
 {% endblock %}

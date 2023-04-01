@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator
 
 # Create your models here.
 
@@ -34,6 +35,9 @@ class Student(models.Model):
     surname = models.CharField(max_length=255)
     birthdate = models.DateField(null=True, blank=True)
     street_nr = models.CharField(max_length=255)
+
+    # New grade field
+    grade = models.PositiveIntegerField(validators=[MaxValueValidator(15)])
 
     def __str__(self):
         return f"{self.name} {self.surname}"

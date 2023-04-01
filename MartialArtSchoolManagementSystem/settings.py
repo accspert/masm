@@ -16,7 +16,7 @@ import mimetypes
 mimetypes.add_type("text/css", ".css", True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path("/root/masm/")
 
 
 # Quick-start development settings - unsuitable for production
@@ -29,8 +29,7 @@ SECRET_KEY = "django-insecure-ltl8znb9@vr@2qx&a$aiu@3b5))5rk220+n^qzn84u)(7opb4-
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "business-software-for-free.de",
-    "hosting182769.a2f81.netcup.net",
+    "89.58.35.113",
     "127.0.0.1",
 ]
 
@@ -52,6 +51,9 @@ INSTALLED_APPS = [
     #'allauth.socialaccount',
 
     "django_htmx",
+
+    'django_filters',
+    #'schedule'
 ]
 
 MIDDLEWARE = [
@@ -135,13 +137,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "images")
+MEDIA_ROOT = os.path.join("/var/www/html/", "images")
 MEDIA_URL = "/images/"
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static/"),
-]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+STATIC_ROOT = "/var/www/html/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

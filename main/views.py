@@ -62,11 +62,23 @@ class DeleteStudent(DeleteView):
         return "/students/"
 
 
+from django_filters.views import FilterView
+from .filters import MyFilter
+
+
 @login_required
 def student_list(request):
     students = Student.objects.all()
+
+    # Bring the filter into the existing logic
+    f = MyFilter(request.GET, queryset=students)
+    
     context = {'records': students, 'record_type': 'Student', 'delete_url': 'delete_student',
                'create_url': 'create_student', 'update_url': 'update_student'}
+    
+    # Add it to the ctx
+    context["filter"] = f
+
     return render(request, 'record_list.html', context)
 
 
@@ -185,3 +197,5 @@ def list_course(request):
     context = {'records': qs, 'record_type': 'course',
                'create_url': 'course_create', 'update_url': 'course_update', 'delete_url': 'course_delete'}
     return render(request, 'record_list.html', context)
+
+

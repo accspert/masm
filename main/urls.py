@@ -4,6 +4,8 @@ from .views import (
     teacher_list, create_teacher, update_teacher, delete_teacher,
     create_course, update_course, delete_course, list_course
 )
+#from .views import CustomCalendarView, CustomEventJSONView
+#from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
 
@@ -22,4 +24,7 @@ urlpatterns = [
     path('course/<int:pk>/update/', update_course, name='course_update'),
     path('course/<int:pk>/delete/', delete_course.as_view(), name='course_delete'),
 
+    #path('calendar/', login_required(CustomCalendarView.as_view()), name='calendar'),
+   # path('calendar_json/', login_required(CustomEventJSONView.as_view()), name='calendar_json'),
 ]
+

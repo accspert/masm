@@ -4,3 +4,5 @@ qrbill
 weasyprint
 django-allauth
 django-htmx
+django-filter
+django
