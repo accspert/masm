@@ -37,7 +37,7 @@ class Student(models.Model):
     street_nr = models.CharField(max_length=255)
 
     # New grade field
-    grade = models.PositiveIntegerField(validators=[MaxValueValidator(15)])
+    grade = models.PositiveIntegerField(validators=[MaxValueValidator(15)], null=True)
 
     def __str__(self):
         return f"{self.name} {self.surname}"
@@ -54,15 +54,6 @@ class Teacher(models.Model):
 
 
 class Course(models.Model):
-    course_name = models.CharField(max_length=255)
-    instructor = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    duration = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.course_name}, {self.instructor}"
-
-
-class CourseSchedule(models.Model):
     DAYS_OF_WEEK = [
         ("Monday", "Monday"),
         ("Tuesday", "Tuesday"),
@@ -72,10 +63,15 @@ class CourseSchedule(models.Model):
         ("Saturday", "Saturday"),
         ("Sunday", "Sunday"),
     ]
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    day_of_week = models.CharField(max_length=30, choices=DAYS_OF_WEEK)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    course_name = models.CharField(max_length=255)
+    instructor = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    duration = models.IntegerField(null=True)
+    day_of_week = models.CharField(max_length=30, choices=DAYS_OF_WEEK, null=True)
+    start_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
+
+    def __str__(self):
+        return f"{self.course_name}, {self.instructor}"
 
 
 class Belt(models.Model):

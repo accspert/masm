@@ -1,3 +1,6 @@
+import datetime
+
+from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -153,6 +156,7 @@ def delete_record(request, pk, model):
     return redirect("")
 
 
+@login_required
 def create_course(request):
     form = CourseForm(request.POST or None)
     context = {'form': form, 'record_type': 'course', "partial_url": "course_create"}
@@ -167,6 +171,7 @@ def create_course(request):
     return render(request, 'create_record.html', context)
 
 
+@login_required
 def update_course(request, pk):
     obj = get_object_or_404(Course, pk=pk)
 
@@ -191,6 +196,7 @@ class delete_course(DeleteView):
         return "/course/"
 
 
+@login_required
 def list_course(request):
 
     qs = Course.objects.all()
@@ -199,3 +205,18 @@ def list_course(request):
     return render(request, 'record_list.html', context)
 
 
+from .calendar import *
+
+
+@login_required
+def calendar_view(request, year_month: str):
+    """Review Courses in a calender view"""
+    dt = datetime.strptime(year_month, "%Y-%m")
+    next = dt + relativedelta(months=1)
+    previous = dt - relativedelta(months=1)
+    ctx = {"classifier": year_month, "previous": previous.strftime('%Y-%m'), "next": next.strftime('%Y-%m')}
+    cal = CourseCalendar(Course.objects.all())
+    split_year_month = year_month.split('-')
+    year, month = split_year_month
+    ctx["cal"] = cal.formatmonth(int(year), int(month))
+    return render(request, "calender.html", ctx)

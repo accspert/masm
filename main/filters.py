@@ -1,5 +1,6 @@
 import django_filters
-from models import Student
+from .models import Student
+
 
 class MyFilter(django_filters.FilterSet):
     search = django_filters.CharFilter(method='filter_search')

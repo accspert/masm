@@ -65,8 +65,10 @@
                 <li><a href="#">Dashboard</a></li>
                 <hr>
                 <li><a href="/students">Students</a></li>
-                <hr>
-                <li><a href="{% url 'course_list' %}">Courses</a></li>
+                <hr><li><a href="{% url 'course_list' %}">Courses</a></li>
+                {% now "Y-m" as year_month %}
+                <li><a href="{% url 'calendar' year_month %}">Course Calender</a></li>
+
                 <hr>
                 <li><a href="/teachers">Teachers</a></li>
                 <hr>
