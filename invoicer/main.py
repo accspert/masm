@@ -15,9 +15,9 @@ def get_qr_bill(debtor, amount):
         account=iban_creditor,
         creditor=creditor,
         debtor=debtor,
-        amount=amount
+        amount=str(amount)
     )
-    
+
     with open("invoice.html") as f:
         html = f.read()
 
@@ -32,10 +32,10 @@ def get_qr_bill(debtor, amount):
 invoices = get_entrys(date) or []
 
 for i in invoices:
-    amount, firstname, lastname, street, housenumber, citycode, city, iban, email = i
+    amount, firstname, lastname, street, housenumber, citycode, city, iban, email = i.values()
     country = iban[:2]
 
-    debtor = {"name": f"{firstname} {lastname}", "street": street, "house_num": housenumber, "pcode": citycode, "city": city, "country": country}
+    debtor = {"name": f"{firstname} {lastname}", "street": street, "house_num": str(housenumber), "pcode": str(citycode), "city": city, "country": country}
 
     file = get_qr_bill(debtor, amount)
 

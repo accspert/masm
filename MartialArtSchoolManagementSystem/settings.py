@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "89.58.35.113",
     "127.0.0.1",
+    "masm.business-software-for-free.de"
 ]
 
 
@@ -95,8 +96,12 @@ WSGI_APPLICATION = "MartialArtSchoolManagementSystem.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db_new.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "masm",
+        "USER": "masm",
+        "PASSWORD": "46uR81KepdO7NXq7ZFu2d",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
     }
 }
 
