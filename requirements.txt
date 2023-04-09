@@ -7,3 +7,4 @@ django-htmx
 django-filter
 django
 pymysql
+python-dateutil
